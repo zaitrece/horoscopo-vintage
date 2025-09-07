@@ -30,10 +30,20 @@
 <script>
 async function cargar(){
   const signo = document.getElementById("signo").value;
-  const res = await fetch("https://aztro.sameerkumar.website?sign="+signo+"&day=today", {method:"POST"});
-  const data = await res.json();
-  document.getElementById("resultado").textContent =
-    `${signo.toUpperCase()} — ${data.current_date}\n\n${data.description}\n\nCompatibilidad: ${data.compatibility}\nHumor: ${data.mood}\nColor: ${data.color}`;
+  const apiUrl = "https://aztro.sameerkumar.website?sign="+signo+"&day=today";
+  const url = "https://api.allorigins.win/raw?url=" + encodeURIComponent(apiUrl);
+  
+  document.getElementById("resultado").textContent = "Cargando...";
+  
+  try {
+    const res = await fetch(url, {method:"POST"});
+    const data = await res.json();
+    document.getElementById("resultado").textContent =
+      `${signo.toUpperCase()} — ${data.current_date}\n\n${data.description}\n\nCompatibilidad: ${data.compatibility}\nHumor: ${data.mood}\nColor: ${data.color}`;
+  } catch(e) {
+    document.getElementById("resultado").textContent = "❌ Error al cargar horóscopo";
+    console.error(e);
+  }
 }
 </script>
 </body>
