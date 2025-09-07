@@ -38,56 +38,51 @@ select,button{padding:10px 12px;border:2px solid #1b1b1b;border-radius:12px;back
   </div>
 
 <script>
-document.addEventListener("DOMContentLoaded",()=>console.log("Index cargado"));
-
 const MAP = {
   "Aries":"aries","Tauro":"taurus","Géminis":"gemini","Cáncer":"cancer","Leo":"leo","Virgo":"virgo",
   "Libra":"libra","Escorpio":"scorpio","Sagitario":"sagittarius","Capricornio":"capricorn",
   "Acuario":"aquarius","Piscis":"pisces"
 };
 
-function showDiag(msg){
-  const d=document.getElementById("diag");
-  d.style.display="block";
-  d.textContent=msg;
-  console.error(msg);
-}
-
 async function cargar(){
   const signoES = document.getElementById("signo").value;
   const signoEN = MAP[signoES];
   const out = document.getElementById("resultado");
   out.textContent = "Cargando...";
-  try{
-    const url = `data/latest/${signoEN}.json?v=${Date.now()}`;
-    const r = await fetch(url, {cache:"no-store"});
-    if(!r.ok){
-      showDiag(`HTTP ${r.status} al pedir ${url}. ¿Existe el archivo y la ruta es exacta (minúsculas)?`);
-      throw new Error("No OK");
-    }
-    const d = await r.json();
-    out.textContent =
-      `${signoES.toUpperCase()} — ${d.current_date}\n\n${d.description}\n\n` +
-      `Compatibilidad: ${d.compatibility}\nHumor: ${d.mood}\nColor: ${d.color}`;
-  }catch(e){
-    out.textContent = "❌ No se pudo leer el horóscopo. Pulsa 'Forzar demo' para ver un ejemplo.";
-    showDiag(`Error: ${e && e.message ? e.message : e}`);
-  }
-}
 
-function demo(){
-  const signoES = document.getElementById("signo").value;
+  // texto de respaldo por si el JSON está vacío o no existe
   const demo = {
     current_date: new Date().toLocaleDateString("es-ES"),
-    description: "Versión demo local: energía favorable para tomar decisiones y simplificar tareas.",
-    compatibility: "Tauro",
-    mood: "Optimista",
-    color: "Rojo"
+    description: "Hoy la energía te favorece para ordenar prioridades y tomar decisiones sencillas.",
+    compatibility: "—",
+    mood: "—",
+    color: "—"
   };
-  document.getElementById("resultado").textContent =
-    `${signoES.toUpperCase()} — ${demo.current_date}\n\n${demo.description}\n\n` +
-    `Compatibilidad: ${demo.compatibility}\nHumor: ${demo.mood}\nColor: ${demo.color}`;
+
+  try{
+    const r = await fetch(`data/latest/${signoEN}.json?v=${Date.now()}`, {cache:"no-store"});
+    if(!r.ok){
+      // si no existe el archivo, usa demo
+      out.textContent = `${signoES.toUpperCase()} — ${demo.current_date}\n\n${demo.description}\n\nCompatibilidad: ${demo.compatibility}\nHumor: ${demo.mood}\nColor: ${demo.color}`;
+      return;
+    }
+    const d = await r.json();
+
+    // Si la API falló y el workflow dejó placeholder vacío, usamos demo
+    const desc = (d.description && d.description.trim().length>0) ? d.description : demo.description;
+    const date = d.current_date || demo.current_date;
+    const comp = d.compatibility || demo.compatibility;
+    const mood = d.mood || demo.mood;
+    const color = d.color || demo.color;
+
+    out.textContent = `${signoES.toUpperCase()} — ${date}\n\n${desc}\n\nCompatibilidad: ${comp}\nHumor: ${mood}\nColor: ${color}`;
+  }catch(e){
+    // si hay cualquier error de red/JSON, mostramos demo
+    out.textContent = `${signoES.toUpperCase()} — ${demo.current_date}\n\n${demo.description}\n\nCompatibilidad: ${demo.compatibility}\nHumor: ${demo.mood}\nColor: ${demo.color}`;
+  }
 }
 </script>
+
 </body>
 </html>
+
