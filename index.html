@@ -4,9 +4,58 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Horóscopo Vintage</title>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body style="font-family:Arial; padding:24px">
-  <h1>Horóscopo Vintage</h1>
-  <p>✅ Si ves este mensaje, GitHub Pages funciona bien.</p>
+<body>
+  <header class="top">
+    <h1>Horóscopo Vintage</h1>
+    <p class="tag">Old school vibes · Astrología al día</p>
+  </header>
+
+  <main class="container">
+    <!-- Selección de signo -->
+    <section class="card">
+      <label for="signo">Tu signo</label>
+      <select id="signo">
+        <option value="aries">Aries</option>
+        <option value="tauro">Tauro</option>
+        <option value="geminis">Géminis</option>
+        <option value="cancer">Cáncer</option>
+        <option value="leo">Leo</option>
+        <option value="virgo">Virgo</option>
+        <option value="libra">Libra</option>
+        <option value="escorpio">Escorpio</option>
+        <option value="sagitario">Sagitario</option>
+        <option value="capricornio">Capricornio</option>
+        <option value="acuario">Acuario</option>
+        <option value="piscis">Piscis</option>
+      </select>
+      <button id="guardar">Guardar signo</button>
+    </section>
+
+    <!-- Navegación de pestañas -->
+    <nav class="tabs card">
+      <button data-tab="diario" class="active">Diario</button>
+      <button data-tab="finde">Fin de semana</button>
+      <button data-tab="semanal">Semanal</button>
+      <button data-tab="mensual">Mensual</button>
+      <button data-tab="anual">Anual</button>
+    </nav>
+
+    <!-- Contenido dinámico -->
+    <section class="card">
+      <div id="cargando" class="muted">Cargando…</div>
+      <article id="contenido"></article>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <a href="privacy.html">Política de privacidad</a> · © <span id="year"></span> Horóscopo Vintage
+  </footer>
+
+  <!-- Script -->
+  <script src="app.js"></script>
 </body>
 </html>
