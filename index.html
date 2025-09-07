@@ -4,47 +4,79 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Horóscopo Vintage</title>
+<style>
+body{margin:0;background:#f4efe6;color:#222;font-family:system-ui,Segoe UI,Roboto,Arial;padding:20px}
+h1{text-align:center;background:#1b1b1b;color:#f7ead9;padding:16px;border-bottom:4px solid #c2352b}
+.container{max-width:860px;margin:20px auto;display:grid;gap:12px}
+.card{background:#fff;border:2px solid #1b1b1b;border-radius:12px;padding:14px;box-shadow:6px 6px 0 #1b1b1b}
+select,button{padding:10px 12px;border:2px solid #1b1b1b;border-radius:12px;background:#f7ead9;font-weight:700}
+button.active,button:hover{cursor:pointer}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+#resultado{white-space:pre-wrap;line-height:1.6}
+footer{text-align:center;padding:16px;color:#555}
+</style>
 </head>
-<body style="font-family:Arial; padding:20px; background:#f4efe6">
+<body>
   <h1>Horóscopo Vintage</h1>
 
-  <label>Elige tu signo:</label>
-  <select id="signo">
-    <option value="aries">Aries</option>
-    <option value="taurus">Tauro</option>
-    <option value="gemini">Géminis</option>
-    <option value="cancer">Cáncer</option>
-    <option value="leo">Leo</option>
-    <option value="virgo">Virgo</option>
-    <option value="libra">Libra</option>
-    <option value="scorpio">Escorpio</option>
-    <option value="sagittarius">Sagitario</option>
-    <option value="capricorn">Capricornio</option>
-    <option value="aquarius">Acuario</option>
-    <option value="pisces">Piscis</option>
-  </select>
-  <button onclick="cargar()">Ver horóscopo</button>
+  <div class="container">
+    <section class="card">
+      <label for="signo">Tu signo</label>
+      <select id="signo">
+        <option>Aries</option><option>Tauro</option><option>Géminis</option>
+        <option>Cáncer</option><option>Leo</option><option>Virgo</option>
+        <option>Libra</option><option>Escorpio</option><option>Sagitario</option>
+        <option>Capricornio</option><option>Acuario</option><option>Piscis</option>
+      </select>
+    </section>
 
-  <pre id="resultado" style="margin-top:20px; white-space:pre-wrap"></pre>
+    <nav class="tabs card">
+      <button data-tab="diario" class="active">Diario</button>
+      <button data-tab="finde">Fin de semana</button>
+      <button data-tab="semanal">Semanal</button>
+      <button data-tab="mensual">Mensual</button>
+      <button data-tab="anual">Anual</button>
+    </nav>
+
+    <section class="card">
+      <article id="resultado">Elige un signo y una pestaña para ver tu horóscopo ✨</article>
+    </section>
+  </div>
+
+  <footer>© <span id="year"></span> Horóscopo Vintage</footer>
 
 <script>
-async function cargar(){
+const tabs = document.querySelectorAll(".tabs button");
+const resultado = document.getElementById("resultado");
+document.getElementById("year").textContent = new Date().getFullYear();
+
+tabs.forEach(b => b.onclick = () => {
+  tabs.forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  mostrar();
+});
+
+document.getElementById("signo").onchange = mostrar;
+
+function mostrar(){
   const signo = document.getElementById("signo").value;
-  const apiUrl = "https://aztro.sameerkumar.website?sign="+signo+"&day=today";
-  const url = "https://api.allorigins.win/raw?url=" + encodeURIComponent(apiUrl);
-  
-  document.getElementById("resultado").textContent = "Cargando...";
-  
-  try {
-    const res = await fetch(url, {method:"POST"});
-    const data = await res.json();
-    document.getElementById("resultado").textContent =
-      `${signo.toUpperCase()} — ${data.current_date}\n\n${data.description}\n\nCompatibilidad: ${data.compatibility}\nHumor: ${data.mood}\nColor: ${data.color}`;
-  } catch(e) {
-    document.getElementById("resultado").textContent = "❌ Error al cargar horóscopo";
-    console.error(e);
-  }
+  const tab = document.querySelector(".tabs button.active").dataset.tab;
+  resultado.textContent = obtener(signo, tab);
 }
+
+function obtener(signo, tab){
+  const plantillas = {
+    diario: `${signo}: Hoy tu intuición brillará. Buen momento para confiar en tus decisiones.`,
+    finde: `${signo}: El fin de semana trae calma y encuentros con personas que te inspiran.`,
+    semanal: `${signo}: Esta semana tu energía se enfoca en proyectos personales. Haz espacio para el descanso.`,
+    mensual: `${signo}: El mes se abre con cambios positivos en tus relaciones y oportunidades en lo laboral.`,
+    anual: `${signo}: Este año será clave para tu crecimiento personal. Cultiva paciencia y determinación.`
+  };
+  return plantillas[tab];
+}
+
+// Mostrar inicial
+mostrar();
 </script>
 </body>
 </html>
