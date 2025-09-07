@@ -2,8 +2,8 @@ name: Horoscopo diario
 
 on:
   schedule:
-    - cron: '10 05 * * *'   # Todos los días a las 07:10 hora España (05:10 UTC)
-  workflow_dispatch:        # Para lanzarlo a mano también
+    - cron: '10 05 * * *'   # 07:10 Madrid (05:10 UTC)
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,14 +16,30 @@ jobs:
         run: |
           mkdir -p data/latest
 
-      - name: Descargar horóscopos
+      - name: Descargar los 12 signos (con reintentos y placeholders)
+        shell: bash
         run: |
           SIGNS=(aries taurus gemini cancer leo virgo libra scorpio sagittarius capricorn aquarius pisces)
           for s in "${SIGNS[@]}"; do
-            echo "Descargando $s..."
-            curl -s -X POST "https://aztro.sameerkumar.website?sign=$s&day=today" \
-              -H 'Content-Length: 0' \
-              -o "data/latest/$s.json"
+            echo "===> ${s}"
+            ok=0
+            for i in {1..4}; do
+              curl -s -X POST "https://aztro.sameerkumar.website?sign=$s&day=today" \
+                -H 'Content-Length: 0' \
+                -o "data/latest/$s.json"
+              # valida que tenga "current_date"
+              if grep -q '"current_date"' "data/latest/$s.json"; then
+                ok=1; break
+              fi
+              echo "Reintento $i para $s ..."
+              sleep 2
+            done
+            if [ $ok -eq 0 ]; then
+              echo "No se pudo obtener $s; escribo placeholder."
+              cat > "data/latest/$s.json" <<EOF
+{"current_date":"","description":"Sin datos hoy","compatibility":"","mood":"","color":""}
+EOF
+            fi
           done
 
       - name: Commit y push
@@ -31,5 +47,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"
           git add data/
-          git commit -m "Auto-update horoscopo" || echo "Sin cambios"
+          git commit -m "Auto-update horoscopo $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Sin cambios"
           git push
