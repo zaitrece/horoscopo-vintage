@@ -1,8 +1,40 @@
 <!doctype html>
-<html>
-<head><meta charset="utf-8"><title>Test</title></head>
-<body>
-  <h1>PRUEBA ✅</h1>
-  <button onclick="alert('Funciona JS')">Probar</button>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Horóscopo Vintage</title>
+</head>
+<body style="font-family:Arial; padding:20px; background:#f4efe6">
+  <h1>Horóscopo Vintage</h1>
+
+  <label>Elige tu signo:</label>
+  <select id="signo">
+    <option value="aries">Aries</option>
+    <option value="taurus">Tauro</option>
+    <option value="gemini">Géminis</option>
+    <option value="cancer">Cáncer</option>
+    <option value="leo">Leo</option>
+    <option value="virgo">Virgo</option>
+    <option value="libra">Libra</option>
+    <option value="scorpio">Escorpio</option>
+    <option value="sagittarius">Sagitario</option>
+    <option value="capricorn">Capricornio</option>
+    <option value="aquarius">Acuario</option>
+    <option value="pisces">Piscis</option>
+  </select>
+  <button onclick="cargar()">Ver horóscopo</button>
+
+  <pre id="resultado" style="margin-top:20px; white-space:pre-wrap"></pre>
+
+<script>
+async function cargar(){
+  const signo = document.getElementById("signo").value;
+  const res = await fetch("https://aztro.sameerkumar.website?sign="+signo+"&day=today", {method:"POST"});
+  const data = await res.json();
+  document.getElementById("resultado").textContent =
+    `${signo.toUpperCase()} — ${data.current_date}\n\n${data.description}\n\nCompatibilidad: ${data.compatibility}\nHumor: ${data.mood}\nColor: ${data.color}`;
+}
+</script>
 </body>
 </html>
