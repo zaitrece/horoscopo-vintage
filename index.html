@@ -46,37 +46,30 @@ footer{text-align:center;padding:16px;color:#555}
   <footer>© <span id="year"></span> Horóscopo Vintage</footer>
 
 <script>
-const tabs = document.querySelectorAll(".tabs button");
-const resultado = document.getElementById("resultado");
-document.getElementById("year").textContent = new Date().getFullYear();
-
-tabs.forEach(b => b.onclick = () => {
-  tabs.forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  mostrar();
-});
-
-document.getElementById("signo").onchange = mostrar;
-
-function mostrar(){
-  const signo = document.getElementById("signo").value;
-  const tab = document.querySelector(".tabs button.active").dataset.tab;
-  resultado.textContent = obtener(signo, tab);
+const MAP = {
+  "Aries":"aries","Tauro":"taurus","Géminis":"gemini","Cáncer":"cancer","Leo":"leo","Virgo":"virgo",
+  "Libra":"libra","Escorpio":"scorpio","Sagitario":"sagittarius","Capricornio":"capricorn",
+  "Acuario":"aquarius","Piscis":"pisces"
+};
+async function cargar(){
+  const signoES = document.getElementById("signo").value;
+  const signoEN = MAP[signoES];
+  const url = `data/latest/${signoEN}.json`; // siempre el día más nuevo
+  const out = document.getElementById("resultado");
+  out.textContent = "Cargando...";
+  try{
+    const r = await fetch(url, {cache:"no-store"});
+    if(!r.ok) throw new Error("No hay archivo de hoy");
+    const d = await r.json();
+    out.textContent =
+      `${signoES.toUpperCase()} — ${d.current_date}\n\n${d.description}\n\n` +
+      `Compatibilidad: ${d.compatibility}\nHumor: ${d.mood}\nColor: ${d.color}`;
+  }catch(e){
+    out.textContent = "Aún no hay datos de hoy. Intenta más tarde.";
+  }
 }
-
-function obtener(signo, tab){
-  const plantillas = {
-    diario: `${signo}: Hoy tu intuición brillará. Buen momento para confiar en tus decisiones.`,
-    finde: `${signo}: El fin de semana trae calma y encuentros con personas que te inspiran.`,
-    semanal: `${signo}: Esta semana tu energía se enfoca en proyectos personales. Haz espacio para el descanso.`,
-    mensual: `${signo}: El mes se abre con cambios positivos en tus relaciones y oportunidades en lo laboral.`,
-    anual: `${signo}: Este año será clave para tu crecimiento personal. Cultiva paciencia y determinación.`
-  };
-  return plantillas[tab];
-}
-
-// Mostrar inicial
-mostrar();
 </script>
+
 </body>
 </html>
+
