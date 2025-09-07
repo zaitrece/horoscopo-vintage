@@ -1,13 +1,28 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Horóscopo Vintage</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Horóscopo Vintage</title>
 
-  <!-- Estilos -->
-  <link rel="stylesheet" href="styles.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4efe6;color:#222;font-family:system-ui,Segoe UI,Roboto,Arial}
+.top{padding:24px 16px;text-align:center;background:#1b1b1b;color:#f7ead9;border-bottom:4px solid #c2352b}
+.top h1{margin:0;font-weight:800}
+.tag{opacity:.9;margin-top:6px}
+.container{max-width:860px;margin:0 auto;padding:16px;display:grid;gap:12px}
+.card{background:#fff;border:2px solid #1b1b1b;border-radius:18px;padding:14px;box-shadow:6px 6px 0 #1b1b1b}
+label{display:block;margin-bottom:8px;font-weight:700}
+select,button{padding:10px 12px;border:2px solid #1b1b1b;border-radius:12px;background:#f7ead9;font-weight:700}
+button.active,button:hover{transform:translateY(-1px);cursor:pointer}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.muted{color:#777}
+#contenido{white-space:pre-wrap;line-height:1.6}
+.foot{padding:24px;text-align:center;color:#555}
+</style>
 </head>
+
 <body>
   <header class="top">
     <h1>Horóscopo Vintage</h1>
@@ -15,47 +30,3 @@
   </header>
 
   <main class="container">
-    <!-- Selección de signo -->
-    <section class="card">
-      <label for="signo">Tu signo</label>
-      <select id="signo">
-        <option value="aries">Aries</option>
-        <option value="tauro">Tauro</option>
-        <option value="geminis">Géminis</option>
-        <option value="cancer">Cáncer</option>
-        <option value="leo">Leo</option>
-        <option value="virgo">Virgo</option>
-        <option value="libra">Libra</option>
-        <option value="escorpio">Escorpio</option>
-        <option value="sagitario">Sagitario</option>
-        <option value="capricornio">Capricornio</option>
-        <option value="acuario">Acuario</option>
-        <option value="piscis">Piscis</option>
-      </select>
-      <button id="guardar">Guardar signo</button>
-    </section>
-
-    <!-- Navegación de pestañas -->
-    <nav class="tabs card">
-      <button data-tab="diario" class="active">Diario</button>
-      <button data-tab="finde">Fin de semana</button>
-      <button data-tab="semanal">Semanal</button>
-      <button data-tab="mensual">Mensual</button>
-      <button data-tab="anual">Anual</button>
-    </nav>
-
-    <!-- Contenido dinámico -->
-    <section class="card">
-      <div id="cargando" class="muted">Cargando…</div>
-      <article id="contenido"></article>
-    </section>
-  </main>
-
-  <footer class="foot">
-    <a href="privacy.html">Política de privacidad</a> · © <span id="year"></span> Horóscopo Vintage
-  </footer>
-
-  <!-- Script -->
-  <script src="app.js"></script>
-</body>
-</html>
