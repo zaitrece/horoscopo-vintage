@@ -10,10 +10,8 @@ h1{text-align:center;background:#1b1b1b;color:#f7ead9;padding:16px;border-bottom
 .container{max-width:860px;margin:20px auto;display:grid;gap:12px}
 .card{background:#fff;border:2px solid #1b1b1b;border-radius:12px;padding:14px;box-shadow:6px 6px 0 #1b1b1b}
 select,button{padding:10px 12px;border:2px solid #1b1b1b;border-radius:12px;background:#f7ead9;font-weight:700}
-button.active,button:hover{cursor:pointer}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 #resultado{white-space:pre-wrap;line-height:1.6}
-footer{text-align:center;padding:16px;color:#555}
+#diag{font-family:monospace;color:#a00;background:#ffeaea;padding:10px;border-radius:8px;display:none}
 </style>
 </head>
 <body>
@@ -28,48 +26,68 @@ footer{text-align:center;padding:16px;color:#555}
         <option>Libra</option><option>Escorpio</option><option>Sagitario</option>
         <option>Capricornio</option><option>Acuario</option><option>Piscis</option>
       </select>
+      <button onclick="cargar()">Ver horóscopo</button>
+      <button onclick="demo()">Forzar demo</button>
     </section>
-
-    <nav class="tabs card">
-      <button data-tab="diario" class="active">Diario</button>
-      <button data-tab="finde">Fin de semana</button>
-      <button data-tab="semanal">Semanal</button>
-      <button data-tab="mensual">Mensual</button>
-      <button data-tab="anual">Anual</button>
-    </nav>
 
     <section class="card">
-      <article id="resultado">Elige un signo y una pestaña para ver tu horóscopo ✨</article>
+      <article id="resultado">Elige signo y pulsa "Ver horóscopo"</article>
     </section>
+
+    <section id="diag" class="card"></section>
   </div>
 
-  <footer>© <span id="year"></span> Horóscopo Vintage</footer>
-
 <script>
+document.addEventListener("DOMContentLoaded",()=>console.log("Index cargado"));
+
 const MAP = {
   "Aries":"aries","Tauro":"taurus","Géminis":"gemini","Cáncer":"cancer","Leo":"leo","Virgo":"virgo",
   "Libra":"libra","Escorpio":"scorpio","Sagitario":"sagittarius","Capricornio":"capricorn",
   "Acuario":"aquarius","Piscis":"pisces"
 };
+
+function showDiag(msg){
+  const d=document.getElementById("diag");
+  d.style.display="block";
+  d.textContent=msg;
+  console.error(msg);
+}
+
 async function cargar(){
   const signoES = document.getElementById("signo").value;
   const signoEN = MAP[signoES];
-  const url = `data/latest/${signoEN}.json`; // siempre el día más nuevo
   const out = document.getElementById("resultado");
   out.textContent = "Cargando...";
   try{
+    const url = `data/latest/${signoEN}.json?v=${Date.now()}`;
     const r = await fetch(url, {cache:"no-store"});
-    if(!r.ok) throw new Error("No hay archivo de hoy");
+    if(!r.ok){
+      showDiag(`HTTP ${r.status} al pedir ${url}. ¿Existe el archivo y la ruta es exacta (minúsculas)?`);
+      throw new Error("No OK");
+    }
     const d = await r.json();
     out.textContent =
       `${signoES.toUpperCase()} — ${d.current_date}\n\n${d.description}\n\n` +
       `Compatibilidad: ${d.compatibility}\nHumor: ${d.mood}\nColor: ${d.color}`;
   }catch(e){
-    out.textContent = "Aún no hay datos de hoy. Intenta más tarde.";
+    out.textContent = "❌ No se pudo leer el horóscopo. Pulsa 'Forzar demo' para ver un ejemplo.";
+    showDiag(`Error: ${e && e.message ? e.message : e}`);
   }
 }
-</script>
 
+function demo(){
+  const signoES = document.getElementById("signo").value;
+  const demo = {
+    current_date: new Date().toLocaleDateString("es-ES"),
+    description: "Versión demo local: energía favorable para tomar decisiones y simplificar tareas.",
+    compatibility: "Tauro",
+    mood: "Optimista",
+    color: "Rojo"
+  };
+  document.getElementById("resultado").textContent =
+    `${signoES.toUpperCase()} — ${demo.current_date}\n\n${demo.description}\n\n` +
+    `Compatibilidad: ${demo.compatibility}\nHumor: ${demo.mood}\nColor: ${demo.color}`;
+}
+</script>
 </body>
 </html>
-
