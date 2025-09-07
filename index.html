@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Horóscopo Vintage</title>
+<style>
+  :root{--bg:#f4efe6;--ink:#1b1b1b;--accent:#c2352b;--card:#fff;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Arial}
+  header{padding:22px 16px;text-align:center;background:#1b1b1b;color:#f7ead9;border-bottom:4px solid var(--accent)}
+  h1{margin:0;font-weight:800}
+  main{max-width:860px;margin:auto;padding:16px;display:grid;gap:12px}
+  .card{background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:14px;box-shadow:6px 6px 0 var(--ink)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  select,button{padding:10px 12px;border:2px solid var(--ink);border-radius:12px;background:#f7ead9;font-weight:700;cursor:pointer}
+  nav.tabs{display:flex;gap:8px;flex-wrap:wrap}
+  nav.tabs button{background:#f7ead9}
+  nav.tabs button.active{background:#ffe1d9;border-color:var(--accent)}
+  #text{white-space:pre-wrap;line-height:1.55}
+  footer{padding:22px;text-align:center;color:#666}
+  .muted{color:#777}
+</style>
+</head>
+<body>
+<header>
+  <h1>Horóscopo Vintage</h1>
+  <div>Old school vibes · Astrología al día</div>
+</header>
+
+<main>
+  <section class="card row">
+    <label for="sign" style="font-weight:800">Tu signo</label>
+    <select id="sign">
+      <option value="aries">Aries</option><option value="tauro">Tauro</option>
+      <option value="geminis">Géminis</option><option value="cancer">Cáncer</option>
+      <option value="leo">Leo</option><option value="virgo">Virgo</option>
+      <option
