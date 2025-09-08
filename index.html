@@ -4,30 +4,8 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Horóscopo Vintage</title>
-<style>
-:root{
-  --bg:#f4efe6;--ink:#1b1b1b;--paper:#fff;--accent:#c2352b;--tint:#f7ead9;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#222;font-family:system-ui,Segoe UI,Roboto,Arial}
-header{padding:24px 16px;text-align:center;background:#1b1b1b;color:#f7ead9;border-bottom:4px solid var(--accent)}
-h1{margin:0;font-weight:800;letter-spacing:.3px}
-main{max-width:920px;margin:0 auto;padding:16px;display:grid;gap:14px}
-.card{background:var(--paper);border:2px solid var(--ink);border-radius:18px;padding:14px;box-shadow:6px 6px 0 var(--ink)}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:760px){.row{grid-template-columns:1fr}}
-label{display:block;margin-bottom:8px;font-weight:700}
-select,button{padding:10px 12px;border:2px solid var(--ink);border-radius:12px;background:var(--tint);font-weight:700}
-button{cursor:pointer}
-.badge{display:inline-block;background:var(--tint);border:2px solid var(--ink);border-radius:999px;padding:4px 10px;font-weight:700}
-.big{font-size:18px;line-height:1.6;white-space:pre-wrap}
-.kv{display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center}
-.kv b{font-size:14px}
-.footer{padding:20px;text-align:center;color:#666}
-.sign-head{display:flex;align-items:center;gap:12px}
-.sign-ico{width:48px;height:48px;border-radius:12px;border:2px solid var(--ink);display:grid;place-items:center;background:var(--tint);font-weight:900}
-.muted{color:#666;font-size:13px}
-</style>
+<link rel="stylesheet" href="styles.css?v=1">
+
 </head>
 <body>
 <header>
@@ -169,3 +147,4 @@ function fechaHoy(){ return new Date().toLocaleDateString("es-ES"); }
 </script>
 </body>
 </html>
+
