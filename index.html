@@ -6,12 +6,12 @@
 <title>Horóscopo Vintage</title>
 <style>
 body{margin:0;background:#f4efe6;color:#222;font-family:system-ui,Segoe UI,Roboto,Arial;padding:20px}
-h1{text-align:center;background:#1b1b1b;color:#f7ead9;padding:16px;border-bottom:4px solid #c2352b}
-.container{max-width:860px;margin:20px auto;display:grid;gap:12px}
+h1{text-align:center;background:#1b1b1b;color:#f7ead9;padding:16px;border-bottom:4px solid #c2352b;margin:-20px -20px 20px}
+.container{max-width:860px;margin:0 auto;display:grid;gap:12px}
 .card{background:#fff;border:2px solid #1b1b1b;border-radius:12px;padding:14px;box-shadow:6px 6px 0 #1b1b1b}
 select,button{padding:10px 12px;border:2px solid #1b1b1b;border-radius:12px;background:#f7ead9;font-weight:700}
 #resultado{white-space:pre-wrap;line-height:1.6}
-#diag{font-family:monospace;color:#a00;background:#ffeaea;padding:10px;border-radius:8px;display:none}
+.small{color:#666;font-size:12px}
 </style>
 </head>
 <body>
@@ -27,14 +27,12 @@ select,button{padding:10px 12px;border:2px solid #1b1b1b;border-radius:12px;back
         <option>Capricornio</option><option>Acuario</option><option>Piscis</option>
       </select>
       <button onclick="cargar()">Ver horóscopo</button>
-      <button onclick="demo()">Forzar demo</button>
+      <div class="small">Si no hay datos del día, se mostrará un texto automático.</div>
     </section>
 
     <section class="card">
-      <article id="resultado">Elige signo y pulsa "Ver horóscopo"</article>
+      <article id="resultado">Elige un signo y pulsa “Ver horóscopo”.</article>
     </section>
-
-    <section id="diag" class="card"></section>
   </div>
 
 <script>
@@ -43,46 +41,35 @@ const MAP = {
   "Libra":"libra","Escorpio":"scorpio","Sagitario":"sagittarius","Capricornio":"capricorn",
   "Acuario":"aquarius","Piscis":"pisces"
 };
+const DEMO = {
+  current_date: new Date().toLocaleDateString("es-ES"),
+  description: "Hoy la energía te favorece para ordenar prioridades y tomar decisiones sencillas.",
+  compatibility: "—", mood: "—", color: "—"
+};
 
 async function cargar(){
   const signoES = document.getElementById("signo").value;
-  const signoEN = MAP[signoES];
+  const key = MAP[signoES];
   const out = document.getElementById("resultado");
   out.textContent = "Cargando...";
 
-  // texto de respaldo por si el JSON está vacío o no existe
-  const demo = {
-    current_date: new Date().toLocaleDateString("es-ES"),
-    description: "Hoy la energía te favorece para ordenar prioridades y tomar decisiones sencillas.",
-    compatibility: "—",
-    mood: "—",
-    color: "—"
-  };
-
   try{
-    const r = await fetch(`data/latest/${signoEN}.json?v=${Date.now()}`, {cache:"no-store"});
-    if(!r.ok){
-      // si no existe el archivo, usa demo
-      out.textContent = `${signoES.toUpperCase()} — ${demo.current_date}\n\n${demo.description}\n\nCompatibilidad: ${demo.compatibility}\nHumor: ${demo.mood}\nColor: ${demo.color}`;
-      return;
-    }
-    const d = await r.json();
+    const r = await fetch(`data/latest.json?v=${Date.now()}`, {cache:"no-store"});
+    if(!r.ok) throw new Error("No se pudo abrir latest.json");
+    const all = await r.json();
+    const d = all[key] || {};
 
-    // Si la API falló y el workflow dejó placeholder vacío, usamos demo
-    const desc = (d.description && d.description.trim().length>0) ? d.description : demo.description;
-    const date = d.current_date || demo.current_date;
-    const comp = d.compatibility || demo.compatibility;
-    const mood = d.mood || demo.mood;
-    const color = d.color || demo.color;
+    const date = (d.current_date||"").trim() || DEMO.current_date;
+    const desc = (d.description||"").trim() || DEMO.description;
+    const comp = (d.compatibility||"").trim() || DEMO.compatibility;
+    const mood = (d.mood||"").trim() || DEMO.mood;
+    const color = (d.color||"").trim() || DEMO.color;
 
     out.textContent = `${signoES.toUpperCase()} — ${date}\n\n${desc}\n\nCompatibilidad: ${comp}\nHumor: ${mood}\nColor: ${color}`;
   }catch(e){
-    // si hay cualquier error de red/JSON, mostramos demo
-    out.textContent = `${signoES.toUpperCase()} — ${demo.current_date}\n\n${demo.description}\n\nCompatibilidad: ${demo.compatibility}\nHumor: ${demo.mood}\nColor: ${demo.color}`;
+    out.textContent = `${signoES.toUpperCase()} — ${DEMO.current_date}\n\n${DEMO.description}\n\nCompatibilidad: ${DEMO.compatibility}\nHumor: ${DEMO.mood}\nColor: ${DEMO.color}`;
   }
 }
 </script>
-
 </body>
 </html>
-
