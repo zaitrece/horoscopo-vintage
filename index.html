@@ -41,10 +41,21 @@ const MAP = {
   "Libra":"libra","Escorpio":"scorpio","Sagitario":"sagittarius","Capricornio":"capricorn",
   "Acuario":"aquarius","Piscis":"pisces"
 };
-const DEMO = {
-  current_date: new Date().toLocaleDateString("es-ES"),
-  description: "Hoy la energía te favorece para ordenar prioridades y tomar decisiones sencillas.",
-  compatibility: "—", mood: "—", color: "—"
+
+// Demo distinto por signo (para que NO se repita todo igual si faltan datos reales)
+const DEMO_BY_SIGN = {
+  aries:"Impulso para empezar y cerrar pendientes.",
+  taurus:"Día para avanzar con calma y constancia.",
+  gemini:"Conversaciones que abren puertas y opciones.",
+  cancer:"Cuida tus límites y tu descanso.",
+  leo:"Brillas si compartes tu talento con otros.",
+  virgo:"Ordena tus ideas y simplifica tareas.",
+  libra:"Equilibra responsabilidades y vida personal.",
+  scorpio:"Intuición alta; observa antes de actuar.",
+  sagittarius:"Movimiento y aprendizaje; planifica viajes.",
+  capricorn:"Progreso firme; reconoce tus logros.",
+  aquarius:"Ideas originales; colabora con tu gente.",
+  pisces:"Escucha tu intuición y pon límites sanos."
 };
 
 async function cargar(){
@@ -55,21 +66,30 @@ async function cargar(){
 
   try{
     const r = await fetch(`data/latest.json?v=${Date.now()}`, {cache:"no-store"});
-    if(!r.ok) throw new Error("No se pudo abrir latest.json");
-    const all = await r.json();
-    const d = all[key] || {};
+    const ok = r.ok;
+    const all = ok ? await r.json() : {};
+    const d = (all && all[key]) ? all[key] : {};
 
-    const date = (d.current_date||"").trim() || DEMO.current_date;
-    const desc = (d.description||"").trim() || DEMO.description;
-    const comp = (d.compatibility||"").trim() || DEMO.compatibility;
-    const mood = (d.mood||"").trim() || DEMO.mood;
-    const color = (d.color||"").trim() || DEMO.color;
+    // Fallbacks: si algún campo viene vacío, mostramos demo/guiones
+    const date = (d.current_date||"").trim() || new Date().toLocaleDateString("es-ES");
+    const desc = (d.description||"").trim() || DEMO_BY_SIGN[key];
+    const comp = (d.compatibility||"").trim() || "—";
+    const mood = (d.mood||"").trim() || "—";
+    const color = (d.color||"").trim() || "—";
 
-    out.textContent = `${signoES.toUpperCase()} — ${date}\n\n${desc}\n\nCompatibilidad: ${comp}\nHumor: ${mood}\nColor: ${color}`;
+    out.textContent =
+      `${signoES.toUpperCase()} — ${date}\n\n${desc}\n\n` +
+      `Compatibilidad: ${comp}\nHumor: ${mood}\nColor: ${color}`;
   }catch(e){
-    out.textContent = `${signoES.toUpperCase()} — ${DEMO.current_date}\n\n${DEMO.description}\n\nCompatibilidad: ${DEMO.compatibility}\nHumor: ${DEMO.mood}\nColor: ${DEMO.color}`;
+    // Si falla la lectura, mostramos demo igualmente
+    const date = new Date().toLocaleDateString("es-ES");
+    out.textContent =
+      `${signoES.toUpperCase()} — ${date}\n\n${DEMO_BY_SIGN[MAP[signoES]]}\n\n` +
+      `Compatibilidad: —\nHumor: —\nColor: —`;
   }
 }
 </script>
+
 </body>
 </html>
+
