@@ -95,6 +95,24 @@ const TIP = {
 };
 
 document.getElementById("ver").addEventListener("click", cargar);
+function setIconFor(key){
+  const el = document.getElementById("icoImg");
+  // quita fallback antiguo si quedó
+  const sib = el.nextElementSibling;
+  if (sib && sib.dataset && sib.dataset.fallback === "1") sib.remove();
+  el.style.display = "block";
+  // fuerza recarga y usa la ruta correcta
+  el.src = `img/zodiac/${key}.png?v=${Date.now()}`;
+  // fallback por si no existe el PNG
+  el.onerror = () => {
+    el.style.display = "none";
+    const fb = document.createElement("div");
+    fb.dataset.fallback = "1";
+    fb.style.cssText = "font-size:28px;display:grid;place-items:center;width:100%;height:100%";
+    fb.textContent = ICON[key] || "★";
+    el.after(fb);
+  };
+}
 
 async function cargar(){
   const signoES = document.getElementById("signo").value;
@@ -145,4 +163,5 @@ function fechaHoy(){ return new Date().toLocaleDateString("es-ES"); }
 </script>
 </body>
 </html>
+
 
