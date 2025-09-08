@@ -1,23 +1,26 @@
 name: Horoscopo diario
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:          # botón "Run workflow"
   schedule:
-    - cron: '10 05 * * *'   # 07:10 Madrid (05:10 UTC)
+    - cron: '10 05 * * *'     # 07:10 Madrid (05:10 UTC)
 
 permissions:
-  contents: write
+  contents: write             # NECESARIO para poder hacer git push
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0      # por si el repo tiene protecciones
 
       - name: Preparar carpetas
         run: mkdir -p data/latest tmp
 
-      - name: Descargar 12 signos con reintentos y sin pisar si falla
+      - name: Descargar 12 signos (con reintentos y sin pisar si falla)
         shell: bash
         run: |
           set -e
@@ -35,7 +38,11 @@ jobs:
             if [ $ok -eq 1 ]; then
               mv "tmp/$s.json" "data/latest/$s.json"
             else
-              echo "API falló para $s: conservo el último bueno (no sobreescribo)."
+              # conserva último bueno si existe; si no, escribe un placeholder decente
+              if [ ! -f "data/latest/$s.json" ]; then
+                echo '{"current_date":"","description":"Sin datos hoy","compatibility":"","mood":"","color":""}' > "data/latest/$s.json"
+              fi
+              echo "API falló para $s; mantenemos archivo existente."
             fi
             sleep 1
           done
