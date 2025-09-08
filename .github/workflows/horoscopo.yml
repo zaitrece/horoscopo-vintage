@@ -54,3 +54,67 @@ jobs:
           git add data/
           git commit -m "Auto-update horoscopo $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Sin cambios"
           git push
+
+
+          name: Horoscopo diario
+
+on:
+  workflow_dispatch:          # botón "Run workflow"
+  schedule:
+    - cron: '10 05 * * *'     # 07:10 Madrid (05:10 UTC)
+
+permissions:
+  contents: write             # necesario para git push
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: Preparar carpeta/base
+        run: |
+          mkdir -p data
+          if [ ! -f data/latest.json ]; then
+            cat > data/latest.json <<'EOF'
+{
+  "aries": {}, "taurus": {}, "gemini": {}, "cancer": {}, "leo": {}, "virgo": {},
+  "libra": {}, "scorpio": {}, "sagittarius": {}, "capricorn": {}, "aquarius": {}, "pisces": {}
+}
+EOF
+          fi
+
+      - name: Actualizar 12 signos (reintentos y sin pisar si falla)
+        shell: bash
+        run: |
+          set -e
+          SIGNS=(aries taurus gemini cancer leo virgo libra scorpio sagittarius capricorn aquarius pisces)
+          TMP=tmp_latest.json
+          cp data/latest.json "$TMP"
+          for s in "${SIGNS[@]}"; do
+            echo "===> $s"
+            ok=0
+            for i in {1..4}; do
+              curl -s -X POST "https://aztro.sameerkumar.website?sign=$s&day=today" \
+                   -H 'Content-Length: 0' -o tmp_sign.json && \
+              grep -q '"current_date"' tmp_sign.json && { ok=1; break; }
+              echo "Reintento $i para $s"; sleep 3
+            done
+            if [ $ok -eq 1 ]; then
+              node -e 'let fs=require("fs");let key=process.argv[1];let f="'"$TMP"'";let obj=JSON.parse(fs.readFileSync(f,"utf8"));obj[key]=JSON.parse(fs.readFileSync("tmp_sign.json","utf8"));fs.writeFileSync(f,JSON.stringify(obj,null,2));' "$s"
+            else
+              echo "API falló para $s; conservo lo que hubiera."
+            fi
+            sleep 1
+          done
+          mv "$TMP" data/latest.json
+
+      - name: Commit y push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/latest.json
+          git commit -m "Auto-update latest.json $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Sin cambios"
+          git push
+
