@@ -108,4 +108,35 @@ button:active{ transform: translateY(1px); }
 }
 #diag{ display:none !important; }
 
+/* Fondo con ilustraciones tattoo */
+body{
+  background:
+    radial-gradient(40% 60% at 20% 10%, rgba(0,0,0,.03), transparent 60%),
+    radial-gradient(30% 50% at 80% 20%, rgba(0,0,0,.025), transparent 60%),
+    radial-gradient(50% 50% at 50% 100%, rgba(0,0,0,.03), transparent 60%),
+    url("img/decor/rose.png") repeat 0 0/220px 220px,
+    url("img/decor/anchor.png") repeat 110px 110px/220px 220px,
+    var(--bg);
+}
+
+/* Esquinas decoradas dentro de cada tarjeta */
+.card {
+  position: relative;
+  overflow: hidden;
+}
+.card::after{
+  content:"";
+  position:absolute; inset:auto -20px -20px auto;
+  width:96px; height:96px; opacity:.25;
+  background: url("img/decor/swallow.png") center/contain no-repeat;
+  pointer-events:none;
+}
+.card::before{
+  content:"";
+  position:absolute; inset:-20px auto auto -20px;
+  width:78px; height:78px; opacity:.25;
+  background: url("img/decor/star.png") center/contain no-repeat;
+  pointer-events:none;
+}
+
 
