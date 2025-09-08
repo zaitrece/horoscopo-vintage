@@ -46,6 +46,7 @@
     <div class="hr-ornamental"></div>
     <div class="muted" id="extra" style="margin-top:10px"></div>
   </section>
+<section id="diag" class="card" style="font-family:monospace">diag…</section>
 
   <section class="row">
     <div class="card"><div class="kv"><b>Compatibilidad</b><span id="compat">—</span></div></div>
@@ -98,15 +99,27 @@ const TIP = {
 document.getElementById("ver")?.addEventListener("click", cargar);
 
 function setIconFor(key){
+  function setIconFor(key){
   const el = document.getElementById("icoImg");
   if(!el) return;
-  // elimina fallback si existiera
+
+  // quita fallback viejo si quedó
   const sib = el.nextElementSibling;
   if (sib && sib.dataset && sib.dataset.fallback === "1") sib.remove();
 
+  // BASE absoluto por si la ruta relativa falla
+  const BASE = location.pathname.includes('/horoscopo-vintage')
+    ? '/horoscopo-vintage/'
+    : './';
+
+  const url = `${BASE}img/zodiac/${key}.png?v=${Date.now()}`;
+
+  // muestra en pantalla la url que intenta cargar (diagnóstico)
+  const d = document.getElementById("diag");
+  if(d) d.textContent = `Icono: ${url}`;
+
   el.style.display = "block";
-  el.removeAttribute("src"); // evita parpadeos
-  el.src = `img/zodiac/${key}.png?v=${Date.now()}`;
+  el.src = url;
 
   // fallback si no existe el PNG
   el.onerror = () => {
@@ -166,6 +179,7 @@ function fechaHoy(){ return new Date().toLocaleDateString("es-ES"); }
 
 </body>
 </html>
+
 
 
 
