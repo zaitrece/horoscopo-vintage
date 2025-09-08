@@ -143,8 +143,8 @@ body{
   position: relative;
   padding: 24px 16px 16px;
   text-align: center;
-  background:#transparent;
-  color:#f7ead9;
+  background:#1b1b1b;
+  color:#transparent;
   border-bottom: 5px double #b53028;
 }
 .header-brand h1{ margin:0; font-weight:800; letter-spacing:.5px; }
@@ -157,6 +157,7 @@ body{
 
 .header-brand .rose-left{ left:16px; }
 .header-brand .rose-right{ right:16px; }
+
 
 
 
