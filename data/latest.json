@@ -1,0 +1,14 @@
+{
+  "aries": {"current_date":"8 September 2025","description":"Impulso para empezar y cerrar pendientes.","compatibility":"Géminis","mood":"Enérgico","color":"Rojo"},
+  "taurus": {"current_date":"8 September 2025","description":"Avanza con calma y constancia; evita sobrecargas.","compatibility":"Cáncer","mood":"Sereno","color":"Verde"},
+  "gemini": {"current_date":"8 September 2025","description":"Conversaciones que abren puertas y opciones.","compatibility":"Libra","mood":"Curioso","color":"Amarillo"},
+  "cancer": {"current_date":"8 September 2025","description":"Cuida tus límites y tu descanso emocional.","compatibility":"Tauro","mood":"Sensible","color":"Plateado"},
+  "leo": {"current_date":"8 September 2025","description":"Brillas si compartes tu talento con otros.","compatibility":"Aries","mood":"Seguro","color":"Dorado"},
+  "virgo": {"current_date":"8 September 2025","description":"Ordena ideas y simplifica tareas priorizando.","compatibility":"Capricornio","mood":"Práctico","color":"Marrón"},
+  "libra": {"current_date":"8 September 2025","description":"Equilibra responsabilidades y vida personal.","compatibility":"Géminis","mood":"Armónico","color":"Rosa"},
+  "scorpio": {"current_date":"8 September 2025","description":"Intuición alta; observa antes de actuar.","compatibility":"Piscis","mood":"Intenso","color":"Burdeos"},
+  "sagittarius": {"current_date":"8 September 2025","description":"Movimiento y aprendizaje; planifica avances.","compatibility":"Aries","mood":"Optimista","color":"Púrpura"},
+  "capricorn": {"current_date":"8 September 2025","description":"Progreso firme; reconoce tus logros.","compatibility":"Virgo","mood":"Constante","color":"Negro"},
+  "aquarius": {"current_date":"8 September 2025","description":"Ideas originales; colabora con tu gente.","compatibility":"Libra","mood":"Libre","color":"Turquesa"},
+  "pisces": {"current_date":"8 September 2025","description":"Escucha tu intuición y pon límites sanos.","compatibility":"Cáncer","mood":"Inspirado","color":"Azul"}
+}
