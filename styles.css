@@ -138,12 +138,26 @@ body{
   background: url("img/decor/bird.png") center/contain no-repeat;
   pointer-events:none;
 }
+/* ===== Header con rosas a los lados ===== */
+.header-brand{
+  position: relative;
+  padding: 24px 16px 16px;
+  text-align: center;
+  background:#1b1b1b;
+  color:#f7ead9;
+  border-bottom: 5px double #b53028;
+}
+.header-brand h1{ margin:0; font-weight:800; letter-spacing:.5px; }
 .header-brand .rose{
   position:absolute; top:50%;
   width:32px; height:auto;          /* 🔹 Más pequeño */
   transform:translateY(-50%);
   filter: drop-shadow(1px 1px 0 rgba(0,0,0,.35));
 }
+
+.header-brand .rose-left{ left:16px; }
+.header-brand .rose-right{ right:16px; }
+
 
 
 
