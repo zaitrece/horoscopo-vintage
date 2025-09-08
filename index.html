@@ -57,7 +57,7 @@
 <footer class="footer">© <span id="y"></span> Horóscopo Vintage</footer>
 
 <script>
-document.getElementById("y").textContent = new Date().getFullYear();
+document.getElementById("y") && (document.getElementById("y").textContent = new Date().getFullYear());
 
 const MAP = {
   "Aries":"aries","Tauro":"taurus","Géminis":"gemini","Cáncer":"cancer","Leo":"leo","Virgo":"virgo",
@@ -65,6 +65,7 @@ const MAP = {
   "Acuario":"aquarius","Piscis":"pisces"
 };
 const ICON = {aries:"♈︎",taurus:"♉︎",gemini:"♊︎",cancer:"♋︎",leo:"♌︎",virgo:"♍︎",libra:"♎︎",scorpio:"♏︎",sagittarius:"♐︎",capricorn:"♑︎",aquarius:"♒︎",pisces:"♓︎"};
+
 const DEMO_BY_SIGN = {
   aries:"Impulso para empezar y cerrar pendientes.",
   taurus:"Día para avanzar con calma y constancia.",
@@ -94,16 +95,20 @@ const TIP = {
   pisces:"Consejo: protege tu paz y tu tiempo."
 };
 
-document.getElementById("ver").addEventListener("click", cargar);
+document.getElementById("ver")?.addEventListener("click", cargar);
+
 function setIconFor(key){
   const el = document.getElementById("icoImg");
-  // quita fallback antiguo si quedó
+  if(!el) return;
+  // elimina fallback si existiera
   const sib = el.nextElementSibling;
   if (sib && sib.dataset && sib.dataset.fallback === "1") sib.remove();
+
   el.style.display = "block";
-  // fuerza recarga y usa la ruta correcta
+  el.removeAttribute("src"); // evita parpadeos
   el.src = `img/zodiac/${key}.png?v=${Date.now()}`;
-  // fallback por si no existe el PNG
+
+  // fallback si no existe el PNG
   el.onerror = () => {
     el.style.display = "none";
     const fb = document.createElement("div");
@@ -117,7 +122,11 @@ function setIconFor(key){
 async function cargar(){
   const signoES = document.getElementById("signo").value;
   const key = MAP[signoES];
-  document.getElementById("ico").textContent = ICON[key] || "★";
+
+  // Icono
+  setIconFor(key);
+
+  // UI init
   setText("badge", signoES.toUpperCase());
   setText("fecha", "Cargando…");
   setText("desc", "Cargando…");
@@ -132,19 +141,11 @@ async function cargar(){
     const all = ok ? await r.json() : {};
     const d = (all && all[key]) ? all[key] : {};
 
-    const date = (d.current_date||"").trim() || fechaHoy();
-const desc = (d.description||"").trim() || DEMO_BY_SIGN[key];
-
-// usa textos claros si faltan datos
-const comp = (d.compatibility && d.compatibility.trim()) ? d.compatibility : "No disponible";
-const mood = (d.mood && d.mood.trim()) ? d.mood : "No disponible";
-const color = (d.color && d.color.trim()) ? d.color : "No disponible";
-
-setText("fecha", date);
-setText("desc", `${desc}\n\n${TIP[key]}`);
-setText("compat", comp);
-setText("mood", mood);
-setText("color", color);
+    const date = val(d.current_date, fechaHoy());
+    const desc = val(d.description, DEMO_BY_SIGN[key]);
+    const comp = val(d.compatibility, "No disponible");
+    const mood = val(d.mood, "No disponible");
+    const color = val(d.color, "No disponible");
 
     setText("fecha", date);
     setText("desc", `${desc}\n\n${TIP[key]}`);
@@ -157,11 +158,14 @@ setText("color", color);
   }
 }
 
-function setText(id, t){ document.getElementById(id).textContent = t; }
+// helpers
+function setText(id, t){ const el=document.getElementById(id); if(el) el.textContent=t; }
 function val(v, fb){ return (v && String(v).trim().length>0) ? v : fb; }
 function fechaHoy(){ return new Date().toLocaleDateString("es-ES"); }
 </script>
+
 </body>
 </html>
+
 
 
