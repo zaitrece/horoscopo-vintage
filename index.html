@@ -31,16 +31,10 @@
     </div>
   </section>
 
-  <section class="card">
-    <div class="sign-head">
-      <div class="sign-ico" id="ico">♈︎</div>
-      <div>
-        <div class="badge" id="badge">ARIES</div>
-        <div class="muted" id="fecha">—</div>
-      </div>
-    </div>
-  </section>
-
+  <div class="sign-ico" style="width:64px;height:64px">
+  <img id="icoImg" alt="Icono signo" style="width:100%;height:100%;object-fit:contain;display:block"/>
+</div>
+  
   <section class="card">
     <div class="big" id="desc">Elige tu signo y pulsa “Ver horóscopo”.</div>
     <div class="hr-ornamental"></div>
@@ -60,13 +54,41 @@
 
 <script>
 document.getElementById("y") && (document.getElementById("y").textContent = new Date().getFullYear());
-
+// Mapa español → nombre archivo
 const MAP = {
   "Aries":"aries","Tauro":"taurus","Géminis":"gemini","Cáncer":"cancer","Leo":"leo","Virgo":"virgo",
   "Libra":"libra","Escorpio":"scorpio","Sagitario":"sagittarius","Capricornio":"capricorn",
   "Acuario":"aquarius","Piscis":"pisces"
 };
-const ICON = {aries:"♈︎",taurus:"♉︎",gemini:"♊︎",cancer:"♋︎",leo:"♌︎",virgo:"♍︎",libra:"♎︎",scorpio:"♏︎",sagittarius:"♐︎",capricorn:"♑︎",aquarius:"♒︎",pisces:"♓︎"};
+
+// Fallback de símbolos, solo si falla el PNG
+const ICON = {
+  aries:"♈︎", taurus:"♉︎", gemini:"♊︎", cancer:"♋︎", leo:"♌︎", virgo:"♍︎",
+  libra:"♎︎", scorpio:"♏︎", sagittarius:"♐︎", capricorn:"♑︎",
+  aquarius:"♒︎", pisces:"♓︎"
+};
+function setIconFor(key){
+  const el = document.getElementById("icoImg");
+  if(!el) return;
+
+  // quita fallback si hubiera
+  const sib = el.nextElementSibling;
+  if (sib && sib.dataset && sib.dataset.fallback === "1") sib.remove();
+
+  const url = `img/zodiac/${key}.png?v=${Date.now()}`;
+  el.style.display = "block";
+  el.src = url;
+
+  el.onerror = () => {
+    el.style.display = "none";
+    const fb = document.createElement("div");
+    fb.dataset.fallback = "1";
+    fb.style.cssText = "font-size:28px;display:grid;place-items:center;width:100%;height:100%";
+    fb.textContent = ICON[key] || "★";
+    el.after(fb);
+  };
+}
+
 
 const DEMO_BY_SIGN = {
   aries:"Impulso para empezar y cerrar pendientes.",
@@ -136,6 +158,7 @@ function setIconFor(key){
 async function cargar(){
   const signoES = document.getElementById("signo").value;
   const key = MAP[signoES];
+  setIconFor(key);   // <<< 
 
   // Icono
   setIconFor(key);
@@ -180,6 +203,7 @@ function fechaHoy(){ return new Date().toLocaleDateString("es-ES"); }
 
 </body>
 </html>
+
 
 
 
