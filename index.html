@@ -3,11 +3,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Horóscopo Vintage</<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
-title>
-  
-<link rel="stylesheet" href="styles.css?v=1">
+<title>Horóscopo Vintage</title>
 
+<!-- Fuente opcional retro; puedes quitar esta línea si quieres -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
+
+<!-- Tu hoja de estilos externa -->
+<link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
 <header>
@@ -16,10 +18,9 @@ title>
 </header>
 
 <main>
-  <!-- Selector -->
   <section class="card">
     <label for="signo">Tu signo</label>
-    <div class="row" style="align-items:end">
+    <div class="row" style="align-items:end;grid-template-columns:1fr 180px;">
       <select id="signo">
         <option>Aries</option><option>Tauro</option><option>Géminis</option>
         <option>Cáncer</option><option>Leo</option><option>Virgo</option>
@@ -30,7 +31,6 @@ title>
     </div>
   </section>
 
-  <!-- Cabecera de signo + fecha -->
   <section class="card">
     <div class="sign-head">
       <div class="sign-ico" id="ico">♈︎</div>
@@ -41,23 +41,16 @@ title>
     </div>
   </section>
 
-  <!-- Cuerpo: Descripción + Consejo -->
   <section class="card">
     <div class="big" id="desc">Elige tu signo y pulsa “Ver horóscopo”.</div>
-    <div class="muted" id="extra" style="margin-top:10px"> </div>
+    <div class="hr-ornamental"></div>
+    <div class="muted" id="extra" style="margin-top:10px"></div>
   </section>
 
-  <!-- Tarjetas de Compatibilidad / Humor / Color -->
   <section class="row">
-    <div class="card">
-      <div class="kv"><b>Compatibilidad</b><span id="compat">—</span></div>
-    </div>
-    <div class="card">
-      <div class="kv"><b>Humor</b><span id="mood">—</span></div>
-    </div>
-    <div class="card">
-      <div class="kv"><b>Color</b><span id="color">—</span></div>
-    </div>
+    <div class="card"><div class="kv"><b>Compatibilidad</b><span id="compat">—</span></div></div>
+    <div class="card"><div class="kv"><b>Humor</b><span id="mood">—</span></div></div>
+    <div class="card"><div class="kv"><b>Color</b><span id="color">—</span></div></div>
   </section>
 </main>
 
@@ -86,7 +79,7 @@ const DEMO_BY_SIGN = {
   aquarius:"Ideas originales; colabora con tu gente.",
   pisces:"Escucha tu intuición y pon límites sanos."
 };
-const TIP = { // Consejo extra para alargar el texto
+const TIP = {
   aries:"Consejo: prioriza 3 tareas y celebra cada avance.",
   taurus:"Consejo: evita sobrecargarte; divide en pasos simples.",
   gemini:"Consejo: toma notas de las ideas que surjan hoy.",
@@ -105,10 +98,8 @@ document.getElementById("ver").addEventListener("click", cargar);
 
 async function cargar(){
   const signoES = document.getElementById("signo").value;
-  const key = MAP[signoES]; // en inglés para las claves
-  const ico = ICON[key];
-
-  // UI inicial
+  const key = MAP[signoES];
+  document.getElementById("ico").textContent = ICON[key] || "★";
   setText("badge", signoES.toUpperCase());
   setText("fecha", "Cargando…");
   setText("desc", "Cargando…");
@@ -116,7 +107,6 @@ async function cargar(){
   setText("compat", "—");
   setText("mood", "—");
   setText("color", "—");
-  document.getElementById("ico").textContent = ico || "★";
 
   try{
     const r = await fetch(`data/latest.json?v=${Date.now()}`, {cache:"no-store"});
@@ -124,7 +114,6 @@ async function cargar(){
     const all = ok ? await r.json() : {};
     const d = (all && all[key]) ? all[key] : {};
 
-    // Campos con fallback
     const date = val(d.current_date, fechaHoy());
     const desc = val(d.description, DEMO_BY_SIGN[key]);
     const comp = val(d.compatibility, "—");
@@ -142,12 +131,9 @@ async function cargar(){
   }
 }
 
-// helpers
 function setText(id, t){ document.getElementById(id).textContent = t; }
 function val(v, fb){ return (v && String(v).trim().length>0) ? v : fb; }
 function fechaHoy(){ return new Date().toLocaleDateString("es-ES"); }
 </script>
 </body>
 </html>
-
-
