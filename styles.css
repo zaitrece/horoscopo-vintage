@@ -106,4 +106,6 @@ button:active{ transform: translateY(1px); }
   background-size: 50% 12px;
   background-repeat: no-repeat;
 }
+#diag{ display:none !important; }
+
 
