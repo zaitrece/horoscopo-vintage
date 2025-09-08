@@ -114,11 +114,19 @@ async function cargar(){
     const all = ok ? await r.json() : {};
     const d = (all && all[key]) ? all[key] : {};
 
-    const date = val(d.current_date, fechaHoy());
-    const desc = val(d.description, DEMO_BY_SIGN[key]);
-    const comp = val(d.compatibility, "—");
-    const mood = val(d.mood, "—");
-    const color = val(d.color, "—");
+    const date = (d.current_date||"").trim() || fechaHoy();
+const desc = (d.description||"").trim() || DEMO_BY_SIGN[key];
+
+// usa textos claros si faltan datos
+const comp = (d.compatibility && d.compatibility.trim()) ? d.compatibility : "No disponible";
+const mood = (d.mood && d.mood.trim()) ? d.mood : "No disponible";
+const color = (d.color && d.color.trim()) ? d.color : "No disponible";
+
+setText("fecha", date);
+setText("desc", `${desc}\n\n${TIP[key]}`);
+setText("compat", comp);
+setText("mood", mood);
+setText("color", color);
 
     setText("fecha", date);
     setText("desc", `${desc}\n\n${TIP[key]}`);
@@ -137,3 +145,4 @@ function fechaHoy(){ return new Date().toLocaleDateString("es-ES"); }
 </script>
 </body>
 </html>
+
