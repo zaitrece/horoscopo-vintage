@@ -5,44 +5,93 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Horóscopo Vintage</title>
 <style>
-body{margin:0;background:#f4efe6;color:#222;font-family:system-ui,Segoe UI,Roboto,Arial;padding:20px}
-h1{text-align:center;background:#1b1b1b;color:#f7ead9;padding:16px;border-bottom:4px solid #c2352b;margin:-20px -20px 20px}
-.container{max-width:860px;margin:0 auto;display:grid;gap:12px}
-.card{background:#fff;border:2px solid #1b1b1b;border-radius:12px;padding:14px;box-shadow:6px 6px 0 #1b1b1b}
-select,button{padding:10px 12px;border:2px solid #1b1b1b;border-radius:12px;background:#f7ead9;font-weight:700}
-#resultado{white-space:pre-wrap;line-height:1.6}
-.small{color:#666;font-size:12px}
+:root{
+  --bg:#f4efe6;--ink:#1b1b1b;--paper:#fff;--accent:#c2352b;--tint:#f7ead9;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#222;font-family:system-ui,Segoe UI,Roboto,Arial}
+header{padding:24px 16px;text-align:center;background:#1b1b1b;color:#f7ead9;border-bottom:4px solid var(--accent)}
+h1{margin:0;font-weight:800;letter-spacing:.3px}
+main{max-width:920px;margin:0 auto;padding:16px;display:grid;gap:14px}
+.card{background:var(--paper);border:2px solid var(--ink);border-radius:18px;padding:14px;box-shadow:6px 6px 0 var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:760px){.row{grid-template-columns:1fr}}
+label{display:block;margin-bottom:8px;font-weight:700}
+select,button{padding:10px 12px;border:2px solid var(--ink);border-radius:12px;background:var(--tint);font-weight:700}
+button{cursor:pointer}
+.badge{display:inline-block;background:var(--tint);border:2px solid var(--ink);border-radius:999px;padding:4px 10px;font-weight:700}
+.big{font-size:18px;line-height:1.6;white-space:pre-wrap}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center}
+.kv b{font-size:14px}
+.footer{padding:20px;text-align:center;color:#666}
+.sign-head{display:flex;align-items:center;gap:12px}
+.sign-ico{width:48px;height:48px;border-radius:12px;border:2px solid var(--ink);display:grid;place-items:center;background:var(--tint);font-weight:900}
+.muted{color:#666;font-size:13px}
 </style>
 </head>
 <body>
+<header>
   <h1>Horóscopo Vintage</h1>
+  <div class="muted">Old school vibes · Actualizado a diario</div>
+</header>
 
-  <div class="container">
-    <section class="card">
-      <label for="signo">Tu signo</label>
+<main>
+  <!-- Selector -->
+  <section class="card">
+    <label for="signo">Tu signo</label>
+    <div class="row" style="align-items:end">
       <select id="signo">
         <option>Aries</option><option>Tauro</option><option>Géminis</option>
         <option>Cáncer</option><option>Leo</option><option>Virgo</option>
         <option>Libra</option><option>Escorpio</option><option>Sagitario</option>
         <option>Capricornio</option><option>Acuario</option><option>Piscis</option>
       </select>
-      <button onclick="cargar()">Ver horóscopo</button>
-      <div class="small">Si no hay datos del día, se mostrará un texto automático.</div>
-    </section>
+      <button id="ver">Ver horóscopo</button>
+    </div>
+  </section>
 
-    <section class="card">
-      <article id="resultado">Elige un signo y pulsa “Ver horóscopo”.</article>
-    </section>
-  </div>
+  <!-- Cabecera de signo + fecha -->
+  <section class="card">
+    <div class="sign-head">
+      <div class="sign-ico" id="ico">♈︎</div>
+      <div>
+        <div class="badge" id="badge">ARIES</div>
+        <div class="muted" id="fecha">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cuerpo: Descripción + Consejo -->
+  <section class="card">
+    <div class="big" id="desc">Elige tu signo y pulsa “Ver horóscopo”.</div>
+    <div class="muted" id="extra" style="margin-top:10px"> </div>
+  </section>
+
+  <!-- Tarjetas de Compatibilidad / Humor / Color -->
+  <section class="row">
+    <div class="card">
+      <div class="kv"><b>Compatibilidad</b><span id="compat">—</span></div>
+    </div>
+    <div class="card">
+      <div class="kv"><b>Humor</b><span id="mood">—</span></div>
+    </div>
+    <div class="card">
+      <div class="kv"><b>Color</b><span id="color">—</span></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">© <span id="y"></span> Horóscopo Vintage</footer>
 
 <script>
+document.getElementById("y").textContent = new Date().getFullYear();
+
 const MAP = {
   "Aries":"aries","Tauro":"taurus","Géminis":"gemini","Cáncer":"cancer","Leo":"leo","Virgo":"virgo",
   "Libra":"libra","Escorpio":"scorpio","Sagitario":"sagittarius","Capricornio":"capricorn",
   "Acuario":"aquarius","Piscis":"pisces"
 };
-
-// Demo distinto por signo (para que NO se repita todo igual si faltan datos reales)
+const ICON = {aries:"♈︎",taurus:"♉︎",gemini:"♊︎",cancer:"♋︎",leo:"♌︎",virgo:"♍︎",libra:"♎︎",scorpio:"♏︎",sagittarius:"♐︎",capricorn:"♑︎",aquarius:"♒︎",pisces:"♓︎"};
 const DEMO_BY_SIGN = {
   aries:"Impulso para empezar y cerrar pendientes.",
   taurus:"Día para avanzar con calma y constancia.",
@@ -52,17 +101,42 @@ const DEMO_BY_SIGN = {
   virgo:"Ordena tus ideas y simplifica tareas.",
   libra:"Equilibra responsabilidades y vida personal.",
   scorpio:"Intuición alta; observa antes de actuar.",
-  sagittarius:"Movimiento y aprendizaje; planifica viajes.",
+  sagittarius:"Movimiento y aprendizaje; planifica avances.",
   capricorn:"Progreso firme; reconoce tus logros.",
   aquarius:"Ideas originales; colabora con tu gente.",
   pisces:"Escucha tu intuición y pon límites sanos."
 };
+const TIP = { // Consejo extra para alargar el texto
+  aries:"Consejo: prioriza 3 tareas y celebra cada avance.",
+  taurus:"Consejo: evita sobrecargarte; divide en pasos simples.",
+  gemini:"Consejo: toma notas de las ideas que surjan hoy.",
+  cancer:"Consejo: dedica un rato a tu autocuidado.",
+  leo:"Consejo: comparte tu plan con alguien de confianza.",
+  virgo:"Consejo: usa listas cortas y elimina lo accesorio.",
+  libra:"Consejo: di no a lo que te desequilibra.",
+  scorpio:"Consejo: confía en tu olfato, pero verifica datos.",
+  sagittarius:"Consejo: aprende algo breve que te motive.",
+  capricorn:"Consejo: revisa metas y ajusta el calendario.",
+  aquarius:"Consejo: prueba un enfoque diferente.",
+  pisces:"Consejo: protege tu paz y tu tiempo."
+};
+
+document.getElementById("ver").addEventListener("click", cargar);
 
 async function cargar(){
   const signoES = document.getElementById("signo").value;
-  const key = MAP[signoES];
-  const out = document.getElementById("resultado");
-  out.textContent = "Cargando...";
+  const key = MAP[signoES]; // en inglés para las claves
+  const ico = ICON[key];
+
+  // UI inicial
+  setText("badge", signoES.toUpperCase());
+  setText("fecha", "Cargando…");
+  setText("desc", "Cargando…");
+  setText("extra", "");
+  setText("compat", "—");
+  setText("mood", "—");
+  setText("color", "—");
+  document.getElementById("ico").textContent = ico || "★";
 
   try{
     const r = await fetch(`data/latest.json?v=${Date.now()}`, {cache:"no-store"});
@@ -70,26 +144,28 @@ async function cargar(){
     const all = ok ? await r.json() : {};
     const d = (all && all[key]) ? all[key] : {};
 
-    // Fallbacks: si algún campo viene vacío, mostramos demo/guiones
-    const date = (d.current_date||"").trim() || new Date().toLocaleDateString("es-ES");
-    const desc = (d.description||"").trim() || DEMO_BY_SIGN[key];
-    const comp = (d.compatibility||"").trim() || "—";
-    const mood = (d.mood||"").trim() || "—";
-    const color = (d.color||"").trim() || "—";
+    // Campos con fallback
+    const date = val(d.current_date, fechaHoy());
+    const desc = val(d.description, DEMO_BY_SIGN[key]);
+    const comp = val(d.compatibility, "—");
+    const mood = val(d.mood, "—");
+    const color = val(d.color, "—");
 
-    out.textContent =
-      `${signoES.toUpperCase()} — ${date}\n\n${desc}\n\n` +
-      `Compatibilidad: ${comp}\nHumor: ${mood}\nColor: ${color}`;
+    setText("fecha", date);
+    setText("desc", `${desc}\n\n${TIP[key]}`);
+    setText("compat", comp);
+    setText("mood", mood);
+    setText("color", color);
   }catch(e){
-    // Si falla la lectura, mostramos demo igualmente
-    const date = new Date().toLocaleDateString("es-ES");
-    out.textContent =
-      `${signoES.toUpperCase()} — ${date}\n\n${DEMO_BY_SIGN[MAP[signoES]]}\n\n` +
-      `Compatibilidad: —\nHumor: —\nColor: —`;
+    setText("fecha", fechaHoy());
+    setText("desc", `${DEMO_BY_SIGN[key]}\n\n${TIP[key]}`);
   }
 }
-</script>
 
+// helpers
+function setText(id, t){ document.getElementById(id).textContent = t; }
+function val(v, fb){ return (v && String(v).trim().length>0) ? v : fb; }
+function fechaHoy(){ return new Date().toLocaleDateString("es-ES"); }
+</script>
 </body>
 </html>
-
