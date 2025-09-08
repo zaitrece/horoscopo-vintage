@@ -138,6 +138,13 @@ body{
   background: url("img/decor/bird.png") center/contain no-repeat;
   pointer-events:none;
 }
+.header-brand .rose{
+  position:absolute; top:50%;
+  width:32px; height:auto;          /* 🔹 Más pequeño */
+  transform:translateY(-50%);
+  filter: drop-shadow(1px 1px 0 rgba(0,0,0,.35));
+}
+
 
 
 
