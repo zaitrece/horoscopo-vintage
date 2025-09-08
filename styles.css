@@ -1,14 +1,107 @@
-*{box-sizing:border-box}
-body{margin:0;background:#f4efe6;color:#222;font-family:system-ui,Segoe UI,Roboto,Arial}
-.top{padding:24px 16px;text-align:center;background:#1b1b1b;color:#f7ead9;border-bottom:4px solid #c2352b}
-.top h1{margin:0;font-weight:800}
-.tag{opacity:.9;margin-top:6px}
-.container{max-width:860px;margin:0 auto;padding:16px;display:grid;gap:12px}
-.card{background:#fff;border:2px solid #1b1b1b;border-radius:18px;padding:14px;box-shadow:6px 6px 0 #1b1b1b}
-label{display:block;margin-bottom:8px;font-weight:700}
-select,button{padding:10px 12px;border:2px solid #1b1b1b;border-radius:12px;background:#f7ead9;font-weight:700}
-button.active,button:hover{transform:translateY(-1px);cursor:pointer}
-.tabs{display:flex;gap:8px;flex-wrap:wrap}
-.muted{color:#777}
-#contenido{white-space:pre-wrap;line-height:1.6}
-.foot{padding:24px;text-align:center;color:#555}
+/* ===== Horóscopo Vintage — estilos old school ===== */
+
+/* Opción sin fuentes externas (compatible 100%) */
+:root{
+  --bg:#f2ecdf;      /* papel antiguo */
+  --ink:#1a1a1a;     /* tinta */
+  --paper:#fffdf7;   /* tarjeta */
+  --accent:#b53028;  /* rojo viejo */
+  --tint:#f6e7c9;    /* crema */
+  --shadow:#1a1a1a;
+}
+
+/* Fondo con textura de papel (solo CSS, sin imágenes externas) */
+body{
+  margin:0; color:#222;
+  background:
+    radial-gradient(40% 60% at 20% 10%, rgba(0,0,0,.03), transparent 60%),
+    radial-gradient(30% 50% at 80% 20%, rgba(0,0,0,.025), transparent 60%),
+    radial-gradient(50% 50% at 50% 100%, rgba(0,0,0,.03), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(0,0,0,.02) 0 2px, transparent 2px 4px),
+    var(--bg);
+  font-family: Georgia, "Times New Roman", Times, serif;
+  line-height: 1.55;
+  padding: 20px;
+}
+
+/* Cabecera con franja y filete inferior */
+header{
+  padding:24px 16px; text-align:center;
+  background: var(--ink); color:#f7ead9;
+  border-bottom: 5px double var(--accent);
+  box-shadow: 0 2px 0 rgba(0,0,0,.06) inset;
+}
+h1{ margin:0; letter-spacing:.5px; font-weight:800; font-size:clamp(22px,3.6vw,34px); }
+.muted{ color:#e7d8be; opacity:.95; }
+
+/* Contenedor de tarjetas */
+main{ max-width:960px; margin:16px auto; display:grid; gap:14px; }
+
+/* Tarjetas con borde entintado y sombra “impresa” */
+.card{
+  background:var(--paper);
+  border:2px solid var(--ink);
+  border-radius: 18px;
+  padding:16px;
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+
+/* Doble filete decorativo (versión “cartela”) */
+.card::before{
+  content:""; display:block; margin:-10px auto 10px;
+  width: 90%; height: 0; border-top: 3px double var(--accent);
+}
+
+/* Fila responsive */
+.row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+@media (max-width:900px){ .row{ grid-template-columns:1fr 1fr; } }
+@media (max-width:620px){ .row{ grid-template-columns:1fr; } }
+
+/* Formulario vintage */
+label{ display:block; margin-bottom:8px; font-weight:700; }
+select,button{
+  appearance:none; -webkit-appearance:none;
+  padding:10px 12px;
+  border:2px solid var(--ink);
+  border-radius: 12px;
+  background: linear-gradient(#fff,#f7ecd3);
+  font-weight:700;
+  box-shadow: 2px 2px 0 var(--shadow);
+}
+button{ cursor:pointer; transition: transform .06s ease; }
+button:active{ transform: translateY(1px); }
+
+/* Badge + icono signo */
+.badge{
+  display:inline-block; background:var(--tint);
+  border:2px solid var(--ink); border-radius: 999px;
+  padding:4px 10px; font-weight:800; letter-spacing:.6px;
+}
+.sign-head{ display:flex; align-items:center; gap:12px; }
+.sign-ico{
+  width:56px; height:56px; border-radius:14px;
+  border:2px solid var(--ink); display:grid; place-items:center;
+  background: conic-gradient(from 0deg, #fffde8, #f6e7c9);
+  font-weight:900; font-size:24px; box-shadow: 3px 3px 0 var(--shadow);
+}
+
+/* Texto grande de descripción */
+.big{ font-size:18px; white-space:pre-wrap; }
+
+/* Key–Value cards */
+.kv{ display:grid; grid-template-columns:150px 1fr; gap:8px; align-items:center; }
+.kv b{ font-size:14px; text-transform:uppercase; letter-spacing:.6px; }
+
+/* Pie */
+.footer{ padding:20px; text-align:center; color:#6a6255; }
+
+/* Detalle extra: separador ornamental */
+.hr-ornamental{
+  --c: var(--accent);
+  height: 12px; margin: 8px 0;
+  background:
+    radial-gradient(circle at 10px 6px, var(--c) 6px, transparent 7px) left,
+    radial-gradient(circle at calc(100% - 10px) 6px, var(--c) 6px, transparent 7px) right;
+  background-size: 50% 12px;
+  background-repeat: no-repeat;
+}
