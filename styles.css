@@ -19,7 +19,8 @@ body{
     radial-gradient(50% 50% at 50% 100%, rgba(0,0,0,.03), transparent 60%),
     repeating-linear-gradient(0deg, rgba(0,0,0,.02) 0 2px, transparent 2px 4px),
     var(--bg);
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: "Cinzel", Georgia, "Times New Roman", Times, serif;
+
   line-height: 1.55;
   padding: 20px;
 }
@@ -105,3 +106,4 @@ button:active{ transform: translateY(1px); }
   background-size: 50% 12px;
   background-repeat: no-repeat;
 }
+
