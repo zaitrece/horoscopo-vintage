@@ -31,9 +31,18 @@
     </div>
   </section>
 
-  <div class="sign-ico" style="width:64px;height:64px">
-  <img id="icoImg" alt="Icono signo" style="width:100%;height:100%;object-fit:contain;display:block"/>
-</div>
+  <section class="card">
+  <div class="sign-head">
+    <div class="sign-ico" style="width:64px;height:64px">
+      <img id="icoImg" alt="Icono signo" style="width:100%;height:100%;object-fit:contain;display:block"/>
+    </div>
+    <div>
+      <div class="badge" id="badge">ARIES</div>
+      <div class="muted" id="fecha">—</div>
+    </div>
+  </div>
+</section>
+
   
   <section class="card">
     <div class="big" id="desc">Elige tu signo y pulsa “Ver horóscopo”.</div>
@@ -54,42 +63,22 @@
 
 <script>
 document.getElementById("y") && (document.getElementById("y").textContent = new Date().getFullYear());
-// Mapa español → nombre archivo
+
+// Mapa español → nombre de archivo (en minúsculas)
 const MAP = {
   "Aries":"aries","Tauro":"taurus","Géminis":"gemini","Cáncer":"cancer","Leo":"leo","Virgo":"virgo",
   "Libra":"libra","Escorpio":"scorpio","Sagitario":"sagittarius","Capricornio":"capricorn",
   "Acuario":"aquarius","Piscis":"pisces"
 };
 
-// Fallback de símbolos, solo si falla el PNG
+// Símbolos fallback (solo si falla el PNG)
 const ICON = {
   aries:"♈︎", taurus:"♉︎", gemini:"♊︎", cancer:"♋︎", leo:"♌︎", virgo:"♍︎",
   libra:"♎︎", scorpio:"♏︎", sagittarius:"♐︎", capricorn:"♑︎",
   aquarius:"♒︎", pisces:"♓︎"
 };
-function setIconFor(key){
-  const el = document.getElementById("icoImg");
-  if(!el) return;
 
-  // quita fallback si hubiera
-  const sib = el.nextElementSibling;
-  if (sib && sib.dataset && sib.dataset.fallback === "1") sib.remove();
-
-  const url = `img/zodiac/${key}.png?v=${Date.now()}`;
-  el.style.display = "block";
-  el.src = url;
-
-  el.onerror = () => {
-    el.style.display = "none";
-    const fb = document.createElement("div");
-    fb.dataset.fallback = "1";
-    fb.style.cssText = "font-size:28px;display:grid;place-items:center;width:100%;height:100%";
-    fb.textContent = ICON[key] || "★";
-    el.after(fb);
-  };
-}
-
-
+// Textos demo y tips
 const DEMO_BY_SIGN = {
   aries:"Impulso para empezar y cerrar pendientes.",
   taurus:"Día para avanzar con calma y constancia.",
@@ -121,23 +110,19 @@ const TIP = {
 
 document.getElementById("ver")?.addEventListener("click", cargar);
 
+// --- SOLO UNA función setIconFor (sin duplicados) ---
 function setIconFor(key){
-  function setIconFor(key){
   const el = document.getElementById("icoImg");
   if(!el) return;
 
-  // quita fallback viejo si quedó
+  // quita posible fallback anterior
   const sib = el.nextElementSibling;
   if (sib && sib.dataset && sib.dataset.fallback === "1") sib.remove();
 
-  // BASE absoluto por si la ruta relativa falla
-  const BASE = location.pathname.includes('/horoscopo-vintage')
-    ? '/horoscopo-vintage/'
-    : './';
+  // ruta a la imagen (misma web) + cache-busting
+  const url = `img/zodiac/${key}.png?v=${Date.now()}`;
 
-  const url = `${BASE}img/zodiac/${key}.png?v=${Date.now()}`;
-
-  // muestra en pantalla la url que intenta cargar (diagnóstico)
+  // diag opcional (si tienes el bloque #diag en la página)
   const d = document.getElementById("diag");
   if(d) d.textContent = `Icono: ${url}`;
 
@@ -158,9 +143,8 @@ function setIconFor(key){
 async function cargar(){
   const signoES = document.getElementById("signo").value;
   const key = MAP[signoES];
-  setIconFor(key);   // <<< 
 
-  // Icono
+  // Coloca el icono del signo (UNA sola vez)
   setIconFor(key);
 
   // UI init
@@ -174,8 +158,7 @@ async function cargar(){
 
   try{
     const r = await fetch(`data/latest.json?v=${Date.now()}`, {cache:"no-store"});
-    const ok = r.ok;
-    const all = ok ? await r.json() : {};
+    const all = r.ok ? await r.json() : {};
     const d = (all && all[key]) ? all[key] : {};
 
     const date = val(d.current_date, fechaHoy());
@@ -201,8 +184,10 @@ function val(v, fb){ return (v && String(v).trim().length>0) ? v : fb; }
 function fechaHoy(){ return new Date().toLocaleDateString("es-ES"); }
 </script>
 
+
 </body>
 </html>
+
 
 
 
