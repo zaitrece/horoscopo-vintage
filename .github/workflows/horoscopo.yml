@@ -2,8 +2,9 @@ name: Horoscopo diario
 
 on:
   workflow_dispatch:
+  on:
   schedule:
-    - cron: '10 05 * * *'   # 07:10 Madrid (05:10 UTC)
+    - cron: '1 22 * * *'   # 00:01 en España (22:01 UTC del día anterior)
 
 permissions:
   contents: write           # necesario para git push
